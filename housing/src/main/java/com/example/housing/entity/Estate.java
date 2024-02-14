@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Data
 @Builder
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="Estate")
 @Table(name="estates")
@@ -17,18 +18,18 @@ public class Estate {
     @Id
     @Column(name="house_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long houseId;
+    private Long houseId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="estate_type", nullable = false)
-    private final EstateType estateType;
+    @Column(name="estate_type", nullable = false, updatable = false)
+    private EstateType estateType;
 
     @Column(name="price", nullable = false)
-    private final Double price;
+    private Double price;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "owner_id")
-    private final Owner owner;
+    private Owner owner;
 
 }
