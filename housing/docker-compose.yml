@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  db:
+    container_name: housing_db
+    image: mysql:8.0.32
+    environment:
+      MYSQL_DATABASE: real_estates
+      MYSQL_ROOT_PASSWORD: nimda
+    healthcheck:
+      test: mysqladmin ping -h localhost --user root --password=nimda
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+    networks:
+      real_estates_network:
+volumes:
+  mysql-data:
+networks:
+  real_estates_network:
