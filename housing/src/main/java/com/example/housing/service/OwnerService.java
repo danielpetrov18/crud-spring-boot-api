@@ -32,28 +32,13 @@ public class OwnerService {
 
     public Owner readOwner(final Long ownerId) {
         log.debug("Fetching owner with id: " + ownerId);
-
-        final Optional<Owner> possibleOwner = this.ownerRepo.findById(ownerId);
-
-        if(possibleOwner.isEmpty()) {
-            log.debug("Owner with id: {} cannot be read from the database!", ownerId);
-            throw new OwnerNotFoundByIdException("Owner with id: " + ownerId + " does not exist!");
-        }
-
-        return possibleOwner.get();
+        return this.getOwnerWithId(ownerId);
     }
 
     public Owner updateOwner(final Long ownerId, final OwnerRequest newOwner) {
         log.debug("Updating owner with id: {} with {}", ownerId, newOwner);
 
-        final Optional<Owner> possibleOwner = this.ownerRepo.findById(ownerId);
-
-        if(possibleOwner.isEmpty()) {
-            log.debug("Owner with id: {} not found!", ownerId);
-            throw new OwnerNotFoundByIdException("Owner with id: " + ownerId + " not found!");
-        }
-
-        final Owner updatedOwner = possibleOwner.get();
+        final Owner updatedOwner = this.getOwnerWithId(ownerId);
 
         updatedOwner.setFirstname(newOwner.getFirstname());
         updatedOwner.setLastname(newOwner.getLastname());
@@ -65,15 +50,20 @@ public class OwnerService {
     }
 
     public void deleteOwner(final Long ownerId) {
+        log.debug("Deleting owner with id: {}", ownerId);
+        this.getOwnerWithId(ownerId);
+        this.ownerRepo.deleteById(ownerId);
+    }
+
+    private Owner getOwnerWithId(final Long ownerId) {
         final Optional<Owner> possibleOwner = this.ownerRepo.findById(ownerId);
 
         if(possibleOwner.isEmpty()) {
-            log.debug("Trying to delete owner with id: {} but not found!", ownerId);
-            throw new OwnerNotFoundByIdException("Owner with id: " + ownerId + " not found!");
+            log.debug("Owner with id: {} cannot be read from the database!", ownerId);
+            throw new OwnerNotFoundByIdException("Owner with id: " + ownerId + " does not exist!");
         }
 
-        log.debug("Deleting owner with id: {}", ownerId);
-        this.ownerRepo.deleteById(ownerId);
+        return possibleOwner.get();
     }
 
 }
