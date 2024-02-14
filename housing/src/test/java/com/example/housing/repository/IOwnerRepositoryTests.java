@@ -1,9 +1,10 @@
-package com.example.housing.entity;
+package com.example.housing.repository;
 
 import java.util.Set;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.housing.entity.Owner;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.is;

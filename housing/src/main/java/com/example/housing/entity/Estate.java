@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 public class Estate {
 
     @Id
-    @Column(name="house_id", updatable = false)
+    @Column(name="estate_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long houseId;
+    private Long estateId;
 
     @Enumerated(EnumType.STRING)
     @Column(name="estate_type", nullable = false, updatable = false)

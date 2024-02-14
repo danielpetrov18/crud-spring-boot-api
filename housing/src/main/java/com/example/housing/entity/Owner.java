@@ -30,7 +30,7 @@ public class Owner {
     @Column(name="last_name", nullable = false, updatable = false)
     private String lastname;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date", nullable = false, updatable = false)
     private LocalDate birthDate;
 
     @Builder.Default
