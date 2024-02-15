@@ -1,9 +1,11 @@
 package com.example.housing.utility;
 
-import com.example.housing.entity.Estate;
-import com.example.housing.entity.EstateType;
+import com.example.housing.domain.entity.Estate;
+import com.example.housing.domain.entity.EstateType;
 
-public class EstateBuilder {
+public final class EstateBuilder {
+
+    private EstateBuilder() {}
 
     private final static Double priceA = 200000d;
     private final static Double priceB = 100000d;

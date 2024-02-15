@@ -1,4 +1,4 @@
-package com.example.housing.entity;
+package com.example.housing.domain.entity;
 
 import lombok.*;
 

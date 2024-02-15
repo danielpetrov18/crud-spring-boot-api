@@ -2,9 +2,11 @@ package com.example.housing.utility;
 
 import java.time.LocalDate;
 
-import com.example.housing.entity.Owner;
+import com.example.housing.domain.entity.Owner;
 
-public class OwnerBuilder {
+public final class OwnerBuilder {
+
+    private OwnerBuilder() {}
 
     private final static String OWNER_A_FIRSTNAME = "John";
     private final static String OWNER_B_FIRSTNAME = "Casey";

@@ -4,15 +4,14 @@ import java.util.Set;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.housing.entity.Owner;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.example.housing.domain.entity.Owner;
 import com.example.housing.utility.OwnerBuilder;
-import com.example.housing.repository.IOwnerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -66,6 +65,7 @@ public class IOwnerRepositoryTests {
     public void testOwnerSuccessfullyUpdatedInDatabase() {
         final Owner originalOwner = OwnerBuilder.getOwnerA();
         this.ownerRepo.save(originalOwner);
+
 
         final Owner newOwner = OwnerBuilder.getOwnerB();
 

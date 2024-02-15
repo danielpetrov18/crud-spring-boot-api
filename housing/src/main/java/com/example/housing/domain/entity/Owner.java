@@ -1,4 +1,4 @@
-package com.example.housing.entity;
+package com.example.housing.domain.entity;
 
 import lombok.*;
 
@@ -15,19 +15,19 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="Owner")
-@Table(name="owners")
+@Entity(name = "Owner")
+@Table(name = "owners")
 public class Owner {
 
     @Id
-    @Column(name="owner_id", updatable = false)
+    @Column(name = "owner_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ownerId;
 
-    @Column(name="first_name", nullable = false, updatable = false)
+    @Column(name = "first_name", nullable = false, updatable = false)
     private String firstname;
 
-    @Column(name="last_name", nullable = false, updatable = false)
+    @Column(name = "last_name", nullable = false, updatable = false)
     private String lastname;
 
     @Column(name = "birth_date", nullable = false, updatable = false)

@@ -2,7 +2,7 @@ package com.example.housing.repository;
 
 import java.util.List;
 
-import com.example.housing.entity.Estate;
+import com.example.housing.domain.entity.Estate;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;

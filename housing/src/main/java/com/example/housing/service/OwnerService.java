@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.housing.entity.Owner;
-import com.example.housing.requests.OwnerRequest;
+import com.example.housing.domain.entity.Owner;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,34 +24,43 @@ public class OwnerService {
         this.ownerRepo = newOwnerRepo;
     }
 
-    public void createOwner(final Owner owner) {
-        log.debug("Inserting a new owner: {}", owner);
-        this.ownerRepo.save(owner);
+    public Owner createOwner(final Owner owner) {
+        final Owner savedOwner = this.ownerRepo.save(owner);
+        log.debug("Inserted a new owner: {}", owner);
+        return savedOwner;
     }
 
     public Owner readOwner(final Long ownerId) {
-        log.debug("Fetching owner with id: " + ownerId);
-        return this.getOwnerWithId(ownerId);
+        final Owner owner = this.getOwnerWithId(ownerId);
+        log.debug("Fetched owner with id: " + ownerId);
+        return owner;
     }
 
-    public Owner updateOwner(final Long ownerId, final OwnerRequest newOwner) {
-        log.debug("Updating owner with id: {} with {}", ownerId, newOwner);
+    public Iterable<Owner> readOwners() {
+        final Iterable<Owner> allOwners = this.ownerRepo.findAll();
+        log.debug("Fetched all owners");
+        return allOwners;
+    }
 
-        final Owner updatedOwner = this.getOwnerWithId(ownerId);
+    public Owner updateOwner(final Long ownerId, final Owner newOwner) {
+        final Owner owner = this.getOwnerWithId(ownerId);
 
-        updatedOwner.setFirstname(newOwner.getFirstname());
-        updatedOwner.setLastname(newOwner.getLastname());
-        updatedOwner.setBirthDate(newOwner.getBirthDate());
+        owner.setFirstname(newOwner.getFirstname());
+        owner.setLastname(newOwner.getLastname());
+        owner.setBirthDate(newOwner.getBirthDate());
 
-        this.ownerRepo.save(updatedOwner);
+        final Owner updatedOwner = this.ownerRepo.save(owner);
+
+        log.debug("Updated owner with id: {} with {}", ownerId, updatedOwner);
 
         return updatedOwner;
     }
 
-    public void deleteOwner(final Long ownerId) {
-        log.debug("Deleting owner with id: {}", ownerId);
-        this.getOwnerWithId(ownerId);
+    public Owner deleteOwner(final Long ownerId) {
+        final Owner deletedOwner = this.getOwnerWithId(ownerId);
         this.ownerRepo.deleteById(ownerId);
+        log.debug("Deleted owner with id: {}", ownerId);
+        return deletedOwner;
     }
 
     private Owner getOwnerWithId(final Long ownerId) {

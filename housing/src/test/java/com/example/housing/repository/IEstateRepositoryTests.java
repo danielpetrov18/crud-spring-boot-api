@@ -4,9 +4,9 @@ import java.util.Set;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.housing.entity.Estate;
-import com.example.housing.entity.Owner;
 import org.junit.jupiter.api.Test;
+import com.example.housing.domain.entity.Owner;
+import com.example.housing.domain.entity.Estate;
 
 import com.example.housing.utility.OwnerBuilder;
 
@@ -14,8 +14,6 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.example.housing.utility.EstateBuilder;
-import com.example.housing.repository.IOwnerRepository;
-import com.example.housing.repository.IEstateRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -43,10 +41,10 @@ public class IEstateRepositoryTests {
     @Test
     public void testAddingOwnerToEstateSuccessfulInDatabase() {
         final Owner owner = OwnerBuilder.getOwnerC();
-        this.ownerRepo.save(owner);
 
         final Estate estate = EstateBuilder.getEstateB();
         estate.setOwner(owner);
+
         this.estateRepo.save(estate);
 
         final Owner estateOwner = this.estateRepo
@@ -60,10 +58,10 @@ public class IEstateRepositoryTests {
     @Test
     public void testRemovingOwnerToEstateSuccessfulInDatabase() {
         final Owner owner = OwnerBuilder.getOwnerC();
-        this.ownerRepo.save(owner);
 
         final Estate estate = EstateBuilder.getEstateB();
         estate.setOwner(owner);
+
         this.estateRepo.save(estate);
 
         this.estateRepo.findById(estate.getEstateId()).ifPresent(foundEstate -> {
@@ -86,7 +84,6 @@ public class IEstateRepositoryTests {
         estates.forEach(estate -> estate.setOwner(owner));
 
         this.ownerRepo.save(owner);
-        this.estateRepo.saveAll(estates);
 
         final List<Estate> ownerEstates = this.estateRepo.findEstatesOwnedByOwnerId(owner.getOwnerId());
         assertThat(ownerEstates.stream().allMatch(
