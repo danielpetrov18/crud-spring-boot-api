@@ -1,6 +1,7 @@
 package com.example.housing.service;
 
 import java.util.Optional;
+import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +35,8 @@ public class EstateService {
         return estate;
     }
 
-    public Iterable<Estate> readEstates() {
-        final Iterable<Estate> allEstates = this.estateRepository.findAll();
+    public Collection<Estate> readEstates() {
+        final Collection<Estate> allEstates = this.estateRepository.findAll();
         log.debug("Fetched all estates");
         return allEstates;
     }

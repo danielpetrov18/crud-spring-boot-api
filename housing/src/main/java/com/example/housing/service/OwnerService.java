@@ -1,6 +1,7 @@
 package com.example.housing.service;
 
 import java.util.Optional;
+import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,8 +37,8 @@ public class OwnerService {
         return owner;
     }
 
-    public Iterable<Owner> readOwners() {
-        final Iterable<Owner> allOwners = this.ownerRepo.findAll();
+    public Collection<Owner> readOwners() {
+        final Collection<Owner> allOwners = this.ownerRepo.findAll();
         log.debug("Fetched all owners");
         return allOwners;
     }

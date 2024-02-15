@@ -2,6 +2,8 @@ package com.example.housing.domain.dto;
 
 import lombok.*;
 
+import com.example.housing.domain.entity.Owner;
+
 import com.example.housing.domain.entity.EstateType;
 
 @Data
@@ -13,5 +15,6 @@ public class EstateDTO {
     private Long estateId;
     private EstateType estateType;
     private Double price;
+    private Owner owner;
 
 }
