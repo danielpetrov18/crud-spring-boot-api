@@ -2,6 +2,8 @@ package com.example.housing.config;
 
 import org.modelmapper.ModelMapper;
 
+import org.modelmapper.convention.MatchingStrategies;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +12,9 @@ public class MapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        final ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        return mapper;
     }
 
 }

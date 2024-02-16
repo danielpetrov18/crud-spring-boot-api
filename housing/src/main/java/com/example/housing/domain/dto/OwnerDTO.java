@@ -18,7 +18,6 @@ public class OwnerDTO {
     private String firstname;
     private String lastname;
     private LocalDate birthDate;
-    @ToString.Exclude
     private Set<Estate> estates;
 
 }

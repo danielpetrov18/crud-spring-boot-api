@@ -1,10 +1,10 @@
 package com.example.housing.controller;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.example.housing.domain.entity.Owner;
 import com.example.housing.service.OwnerService;
 import com.example.housing.utility.OwnerBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
@@ -32,139 +31,103 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OwnerControllerTests {
 
     private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
     private final OwnerService ownerService;
 
     @Autowired
-    public OwnerControllerTests(final MockMvc newMockMvc, final OwnerService newOwnerService) {
+    public OwnerControllerTests(MockMvc newMockMvc, OwnerService newOwnerService, ObjectMapper newObjectMapper) {
         this.mockMvc = newMockMvc;
+        this.objectMapper = newObjectMapper;
         this.ownerService = newOwnerService;
     }
 
     @Test
-    public void testPostMethodOwnerCreatedSuccessfullyReturns201StatusCode() {
-        final String newOwnerJson = """
-                        {
-                            "ownerId": 1,
-                            "firstname": "John",
-                            "lastname": "Snow",
-                            "birthDate": "1990-01-01",
-                            "estates": []
-                        }""";
+    public void testPostMethodOwnerCreatedSuccessfullyReturns201StatusCode() throws Exception {
+        final Owner createdOwner = OwnerBuilder.getOwnerC();
 
-        try {
-            this.mockMvc.perform(
-                            MockMvcRequestBuilders
-                                    .post("/owners")
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(newOwnerJson)
-                    )
-                    .andExpect(status().isCreated());
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-        }
+        final String ownerJson = this.objectMapper.writeValueAsString(createdOwner);
+
+        this.mockMvc.perform(
+            MockMvcRequestBuilders
+                    .post("/owners")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(ownerJson)
+        )
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.firstname").value(createdOwner.getFirstname()))
+        .andExpect(jsonPath("$.lastname").value(createdOwner.getLastname()))
+        .andExpect(jsonPath("$.birthDate").value(createdOwner.getBirthDate().toString()));
     }
 
     @Test
-    public void testGetMethodWithExistingOwnerIdReturns200StatusCode() {
+    public void testGetMethodWithExistingOwnerIdReturns200StatusCode() throws Exception {
         final Owner savedOwner = this.ownerService.createOwner(OwnerBuilder.getOwnerC());
         final Long existingOwnerId = 1L;
 
-        try {
-            this.mockMvc.perform(
-                            MockMvcRequestBuilders
-                                    .get("/owners/{id}", existingOwnerId)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.ownerId").value(savedOwner.getOwnerId()))
-                    .andExpect(jsonPath("$.firstname").value(savedOwner.getFirstname()))
-                    .andExpect(jsonPath("$.lastname").value(savedOwner.getLastname()))
-                    .andExpect(jsonPath("$.birthDate").value(savedOwner.getBirthDate().toString()));
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-        }
+        this.mockMvc.perform(
+            MockMvcRequestBuilders
+                    .get("/owners/{id}", existingOwnerId)
+                    .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.ownerId").value(savedOwner.getOwnerId()))
+        .andExpect(jsonPath("$.firstname").value(savedOwner.getFirstname()))
+        .andExpect(jsonPath("$.lastname").value(savedOwner.getLastname()))
+        .andExpect(jsonPath("$.birthDate").value(savedOwner.getBirthDate().toString()));
     }
 
     @Test
-    public void testPutMethodWithNonExistingOwnerIdReturns404StatusCode() {
+    public void testPutMethodWithNonExistingOwnerIdReturns404StatusCode() throws Exception {
         final Long nonExistingOwnerId = 42L;
-        final String newOwnerJson = """
-                        {
-                            "ownerId": 42,
-                            "firstname": "John",
-                            "lastname": "Snow",
-                            "birthDate": "1990-01-01",
-                            "estates": []
-                        }""";
+        final Owner owner = OwnerBuilder.getOwnerB();
+        final String ownerJson = this.objectMapper.writeValueAsString(owner);
 
-        try {
-            this.mockMvc.perform(
-                    MockMvcRequestBuilders
-                            .put("/owners/{id}", nonExistingOwnerId)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(newOwnerJson)
-            ).andExpect(status().isNotFound());
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-        }
+        this.mockMvc.perform(
+            MockMvcRequestBuilders
+                    .put("/owners/{id}", nonExistingOwnerId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(ownerJson)
+        ).andExpect(status().isNotFound());
     }
 
     @Test
-    public void testPutMethodWithExistingOwnerIdReturns200StatusCode() {
+    public void testPutMethodWithExistingOwnerIdReturns200StatusCode() throws Exception {
         this.ownerService.createOwner(OwnerBuilder.getOwnerC());
 
         final Long existingOwnerId = 1L;
-        final String updatedOwnerJson = """
-                        {
-                            "ownerId": 1,
-                            "firstname": "John",
-                            "lastname": "Snow",
-                            "birthDate": "1990-01-01",
-                            "estates": []
-                        }""";
+        final Owner newOwner = OwnerBuilder.getOwnerA();
+        newOwner.setOwnerId(existingOwnerId);
+        final String newOwnerJson = this.objectMapper.writeValueAsString(newOwner);
 
-        try {
-            this.mockMvc.perform(
-                    MockMvcRequestBuilders
-                            .put("/owners/{id}", existingOwnerId)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(updatedOwnerJson)
-            )
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.ownerId").value(existingOwnerId))
-            .andExpect(jsonPath("$.firstname").value("John"))
-            .andExpect(jsonPath("$.lastname").value("Snow"))
-            .andExpect(jsonPath("$.birthDate").value("1990-01-01"));
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-        }
+        this.mockMvc.perform(
+            MockMvcRequestBuilders
+                    .put("/owners/{id}", existingOwnerId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(newOwnerJson)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.ownerId").value(existingOwnerId))
+        .andExpect(jsonPath("$.firstname").value(newOwner.getFirstname()))
+        .andExpect(jsonPath("$.lastname").value(newOwner.getLastname()))
+        .andExpect(jsonPath("$.birthDate").value(newOwner.getBirthDate().toString()));
     }
 
     @Test
-    public void testExistingOwnerDeletedSuccessfullyReturns200StatusCode() {
+    public void testExistingOwnerDeletedSuccessfullyReturns200StatusCode() throws Exception {
         final Owner toBeDeleted = this.ownerService.createOwner(OwnerBuilder.getOwnerC());
 
         final Long existingOwnerId = 1L;
 
-        try {
-            this.mockMvc.perform(
-                            MockMvcRequestBuilders
-                                    .delete("/owners/{id}", existingOwnerId)
-                                    .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.ownerId").value(toBeDeleted.getOwnerId()))
-                    .andExpect(jsonPath("$.firstname").value(toBeDeleted.getFirstname()))
-                    .andExpect(jsonPath("$.lastname").value(toBeDeleted.getLastname()))
-                    .andExpect(jsonPath("$.birthDate").value(toBeDeleted.getBirthDate().toString()));
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-        }
+        this.mockMvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/owners/{id}", existingOwnerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.ownerId").value(toBeDeleted.getOwnerId()))
+        .andExpect(jsonPath("$.firstname").value(toBeDeleted.getFirstname()))
+        .andExpect(jsonPath("$.lastname").value(toBeDeleted.getLastname()))
+        .andExpect(jsonPath("$.birthDate").value(toBeDeleted.getBirthDate().toString()));
     }
 
 }

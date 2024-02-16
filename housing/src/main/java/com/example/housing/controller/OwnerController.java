@@ -67,9 +67,9 @@ public class OwnerController {
         try {
             final Owner toBeInserted = this.ownerMapper.mapFrom(ownerRequest);
             final Owner insertedOwner = this.ownerService.createOwner(toBeInserted);
-            final OwnerDTO insrtedOwnerDTO = this.ownerMapper.mapTo(insertedOwner);
-            log.debug("Inserted a new owner: {}", insertedOwner);
-            return ResponseEntity.status(HttpStatus.CREATED).body(insrtedOwnerDTO);
+            final OwnerDTO insertedOwnerDTO = this.ownerMapper.mapTo(insertedOwner);
+            log.debug("Inserted a new owner: {}", insertedOwnerDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(insertedOwnerDTO);
         }
         catch(Exception e) {
             log.error(e.getMessage());

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.Optional;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.example.housing.domain.entity.Owner;
 import com.example.housing.domain.entity.Estate;
@@ -35,7 +36,7 @@ public class IEstateRepositoryTests {
         final Optional<Estate> possibleEstate = this.estateRepo.findById(estate.getEstateId());
 
         assertThat(possibleEstate.isPresent(), is(true));
-        assertThat(possibleEstate.get(), equalTo(estate));
+        Assertions.assertThat(possibleEstate.get()).isEqualTo(estate);
     }
 
     @Test
