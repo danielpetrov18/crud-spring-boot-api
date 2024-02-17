@@ -1,9 +1,15 @@
 package com.example.housing.repository;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.example.housing.domain.entity.Estate;
+import com.example.housing.utility.EstateBuilder;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -21,6 +27,15 @@ public class IOwnerRepositoryTests {
 
     @Autowired
     private IOwnerRepository ownerRepo;
+
+    @Autowired
+    private IEstateRepository estateRepo;
+
+    @AfterEach
+    public void cleanUp() {
+        this.ownerRepo.deleteAll();
+        this.estateRepo.deleteAll();
+    }
 
     @Test
     public void testOwnerSuccessfullySavedInDatabase() {
@@ -65,7 +80,6 @@ public class IOwnerRepositoryTests {
     public void testOwnerSuccessfullyUpdatedInDatabase() {
         final Owner originalOwner = OwnerBuilder.getOwnerA();
         this.ownerRepo.save(originalOwner);
-
 
         final Owner newOwner = OwnerBuilder.getOwnerB();
 

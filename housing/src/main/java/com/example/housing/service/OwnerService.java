@@ -31,15 +31,15 @@ public class OwnerService {
         return savedOwner;
     }
 
-    public Owner readOwner(final Long ownerId) {
-        final Owner owner = this.getOwnerWithId(ownerId);
-        log.debug("Fetched owner with id: " + ownerId);
-        return owner;
+    public Optional<Owner> readOwner(final Long ownerId) {
+        final Optional<Owner> possibleOwner = this.ownerRepo.findById(ownerId);
+        log.debug("Fetched owner with id: {}", ownerId);
+        return possibleOwner;
     }
 
-    public Collection<Owner> readOwners() {
+    public Collection<Owner> readAllOwners() {
         final Collection<Owner> allOwners = this.ownerRepo.findAll();
-        log.debug("Fetched all owners");
+        log.debug("Fetched all owners.");
         return allOwners;
     }
 
@@ -51,8 +51,7 @@ public class OwnerService {
         owner.setBirthDate(newOwner.getBirthDate());
 
         final Owner updatedOwner = this.ownerRepo.save(owner);
-
-        log.debug("Updated owner with id: {} with {}", ownerId, updatedOwner);
+        log.debug("Old owner: {}, Updated owner: {}", owner, updatedOwner);
 
         return updatedOwner;
     }
@@ -60,7 +59,7 @@ public class OwnerService {
     public Owner deleteOwner(final Long ownerId) {
         final Owner deletedOwner = this.getOwnerWithId(ownerId);
         this.ownerRepo.deleteById(ownerId);
-        log.debug("Deleted owner with id: {}", ownerId);
+        log.debug("Deleted owner: {}", ownerId);
         return deletedOwner;
     }
 

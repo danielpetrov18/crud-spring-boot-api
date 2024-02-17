@@ -25,14 +25,15 @@ public class EstateService {
 
     public Estate saveEstate(final Estate estate) {
         final Estate savedEstate = this.estateRepository.save(estate);
-        log.debug("Inserted an estate: " + savedEstate);
+        log.debug("Inserted an estate: {}", savedEstate);
         return savedEstate;
     }
 
-    public Estate readEstate(final Long estateId) {
-        final Estate estate = this.getEstateWithId(estateId);
-        log.debug("Fetched estate: {} with id: {}", estate, estateId);
-        return estate;
+
+    public Optional<Estate> readEstate(final Long estateId) {
+        final Optional<Estate> possibleEstate = this.estateRepository.findById(estateId);
+        log.debug("Fetched estate: {}", possibleEstate);
+        return possibleEstate;
     }
 
     public Collection<Estate> readEstates() {
@@ -42,14 +43,13 @@ public class EstateService {
     }
 
     public Estate updateEstate(final Long estateId, final Estate newEstate) {
-        final Estate estate = this.getEstateWithId(estateId);
+        final Estate oldEstate = this.getEstateWithId(estateId);
 
-        estate.setEstateType(newEstate.getEstateType());
-        estate.setPrice(newEstate.getPrice());
+        oldEstate.setEstateType(newEstate.getEstateType());
+        oldEstate.setPrice(newEstate.getPrice());
+        final Estate updatedEstate = this.estateRepository.save(oldEstate);
 
-        final Estate updatedEstate = this.estateRepository.save(estate);
-
-        log.debug("Updated estate with id: {}", estateId);
+        log.debug("Old estate: {}, Updated estate: {}", oldEstate, newEstate);
 
         return updatedEstate;
     }
@@ -57,7 +57,7 @@ public class EstateService {
     public Estate deleteEstate(final Long estateId) {
         final Estate deletedEstate = this.getEstateWithId(estateId);
         this.estateRepository.deleteById(estateId);
-        log.debug("Deleted estate with id: {}", estateId);
+        log.debug("Deleted estate: {}", deletedEstate);
         return deletedEstate;
     }
 

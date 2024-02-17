@@ -13,7 +13,7 @@ public enum EstateType {
 
     private final String type;
 
-    private EstateType(final String newType) {
+    EstateType(final String newType) {
         this.type = newType;
     }
 

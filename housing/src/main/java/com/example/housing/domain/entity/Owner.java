@@ -5,14 +5,12 @@ import lombok.*;
 import java.util.Set;
 import java.util.HashSet;
 import java.time.LocalDate;
+import java.util.Collection;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Owner")
@@ -34,9 +32,10 @@ public class Owner {
     private LocalDate birthDate;
 
     @Builder.Default
-    @ToString.Exclude
-    @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private final Set<Estate> ownedEstates = new HashSet<>();
+    private Set<Estate> ownedEstates = new HashSet<>();
+    public void addEstates(final Collection<Estate> estates) {
+        this.ownedEstates.addAll(estates);
+    }
 
 }

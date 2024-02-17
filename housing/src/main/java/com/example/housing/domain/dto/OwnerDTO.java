@@ -3,6 +3,7 @@ package com.example.housing.domain.dto;
 import lombok.*;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class OwnerDTO {
     private String firstname;
     private String lastname;
     private LocalDate birthDate;
-    private Set<Estate> estates;
+    @Builder.Default
+    private Set<Estate> ownedEstates = new HashSet<>();
 
 }

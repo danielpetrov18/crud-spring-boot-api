@@ -4,11 +4,8 @@ import lombok.*;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="Estate")
@@ -28,7 +25,6 @@ public class Estate {
     private Double price;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "owner_id")
     private Owner owner;
 

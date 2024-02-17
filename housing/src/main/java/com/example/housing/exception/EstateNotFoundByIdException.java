@@ -1,11 +1,12 @@
 package com.example.housing.exception;
 
-public class EstateNotFoundByIdException extends RuntimeException {
-
-    public EstateNotFoundByIdException() {
+public class EstateNotFoundByIdException extends ControllerException {
+    public EstateNotFoundByIdException(String errorName) {
+        super(errorName);
     }
 
-    public EstateNotFoundByIdException(String message) {
-        super(message);
+    public EstateNotFoundByIdException(String message, String errorName) {
+        super(message, errorName);
     }
+
 }

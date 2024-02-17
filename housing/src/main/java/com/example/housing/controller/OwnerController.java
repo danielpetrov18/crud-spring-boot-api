@@ -1,6 +1,11 @@
 package com.example.housing.controller;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
+
+import com.example.housing.exception.OwnerNotFoundByIdException;
 
 import com.example.housing.domain.dto.OwnerDTO;
 import com.example.housing.domain.entity.Owner;
@@ -11,9 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -26,40 +28,6 @@ public class OwnerController {
     public OwnerController(final OwnerService newOwnerService, final OwnerMapper newOwnerMapper) {
         this.ownerMapper = newOwnerMapper;
         this.ownerService = newOwnerService;
-    }
-
-    @GetMapping(path = "/owners/{id}")
-    public ResponseEntity<?> fetchOwnerById(@PathVariable("id") final Long ownerId) {
-        try {
-            final Owner fetchedOwner = this.ownerService.readOwner(ownerId);
-            final OwnerDTO fetchedOwnerDTO = this.ownerMapper.mapTo(fetchedOwner);
-            log.debug("Conversion from: {} to: {}", fetchedOwner, fetchedOwnerDTO);
-            return ResponseEntity.ok(fetchedOwnerDTO);
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping(path = "/owners")
-    public ResponseEntity<?> fetchOwners() {
-        try {
-            final Collection<Owner> fetchedOwners = this.ownerService.readOwners();
-
-            final Collection<OwnerDTO> fetchedOwnersDTO = fetchedOwners
-                    .stream()
-                    .map(this.ownerMapper::mapTo)
-                    .collect(Collectors.toUnmodifiableSet());
-
-            log.debug("Fetched owners and converted them");
-
-            return ResponseEntity.ok(fetchedOwnersDTO);
-        }
-        catch(Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.noContent().build();
-        }
     }
 
     @PostMapping(path = "/owners")
@@ -77,13 +45,49 @@ public class OwnerController {
         }
     }
 
+    @GetMapping(path = "/owners/{id}")
+    public ResponseEntity<?> fetchOwnerById(@PathVariable("id") final Long ownerId) {
+        return this.ownerService.readOwner(ownerId)
+                .map(owner -> {
+                    final OwnerDTO fetchedOwnerDTO = this.ownerMapper.mapTo(owner);
+                    log.debug("Fetched: {}", fetchedOwnerDTO);
+                    return ResponseEntity.ok(fetchedOwnerDTO);
+                })
+                .orElseGet(() -> {
+                    final String errMsg = "Owner with id: " + ownerId + " not found!";
+                    log.error(errMsg);
+                    throw new OwnerNotFoundByIdException("OwnerNotFoundByIdException", errMsg);
+                });
+    }
+
+
+    @GetMapping(path = "/owners")
+    public ResponseEntity<?> fetchOwners() {
+        try {
+            final Collection<Owner> fetchedOwners = this.ownerService.readAllOwners();
+
+            final Collection<OwnerDTO> fetchedOwnersDTO = fetchedOwners
+                    .stream()
+                    .map(this.ownerMapper::mapTo)
+                    .collect(Collectors.toUnmodifiableSet());
+
+            log.debug("Fetched all owners");
+
+            return ResponseEntity.ok(fetchedOwnersDTO);
+        }
+        catch(Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.noContent().build();
+        }
+    }
+
     @PutMapping(path = "/owners/{id}")
     public ResponseEntity<?> updateOwner(@PathVariable("id") final Long id, @RequestBody final OwnerDTO dto) {
         try {
             final Owner ownerObject = this.ownerMapper.mapFrom(dto);
             final Owner updatedOwner = this.ownerService.updateOwner(id, ownerObject);
             final OwnerDTO updatedOwnerDTO = this.ownerMapper.mapTo(updatedOwner);
-            log.debug("Updated owner with id: {}", id);
+            log.debug("Updated owner: {}", updatedOwnerDTO);
             return ResponseEntity.ok(updatedOwnerDTO);
         }
         catch(Exception e) {
