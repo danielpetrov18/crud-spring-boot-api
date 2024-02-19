@@ -5,13 +5,11 @@ import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.housing.domain.entity.Owner;
-
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.housing.domain.entity.Owner;
 import com.example.housing.repository.IOwnerRepository;
-
 import com.example.housing.exception.OwnerNotFoundByIdException;
 
 @Slf4j
@@ -25,25 +23,25 @@ public class OwnerService {
         this.ownerRepo = newOwnerRepo;
     }
 
-    public Owner createOwner(final Owner owner) {
+    public Owner saveOwner(final Owner owner) {
         final Owner savedOwner = this.ownerRepo.save(owner);
-        log.debug("Inserted a new owner: {}", owner);
+        log.debug("Saved an owner: {}", savedOwner);
         return savedOwner;
     }
 
-    public Optional<Owner> readOwner(final Long ownerId) {
+    public Owner findOwnerById(final Long ownerId) {
         final Optional<Owner> possibleOwner = this.ownerRepo.findById(ownerId);
-        log.debug("Fetched owner with id: {}", ownerId);
-        return possibleOwner;
+        log.debug("ID: {}, Found owner: {}", ownerId, possibleOwner);
+        return possibleOwner.get();
     }
 
-    public Collection<Owner> readAllOwners() {
+    public Collection<Owner> findAllOwners() {
         final Collection<Owner> allOwners = this.ownerRepo.findAll();
-        log.debug("Fetched all owners.");
+        log.debug("Found all owners");
         return allOwners;
     }
 
-    public Owner updateOwner(final Long ownerId, final Owner newOwner) {
+    public Owner updateOwnerById(final Long ownerId, final Owner newOwner) {
         final Owner owner = this.getOwnerWithId(ownerId);
 
         owner.setFirstname(newOwner.getFirstname());
@@ -56,7 +54,7 @@ public class OwnerService {
         return updatedOwner;
     }
 
-    public Owner deleteOwner(final Long ownerId) {
+    public Owner deleteOwnerById(final Long ownerId) {
         final Owner deletedOwner = this.getOwnerWithId(ownerId);
         this.ownerRepo.deleteById(ownerId);
         log.debug("Deleted owner: {}", ownerId);

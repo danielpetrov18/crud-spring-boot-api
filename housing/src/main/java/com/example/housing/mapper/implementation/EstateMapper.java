@@ -19,6 +19,7 @@ public class EstateMapper implements IMapper<Estate, EstateDTO> {
         this.mapper = newMapper;
     }
 
+
     @Override
     public EstateDTO mapTo(Estate estate) {
         return this.mapper.map(estate, EstateDTO.class);

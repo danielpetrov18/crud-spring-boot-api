@@ -61,7 +61,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testGetMethodWithExistingOwnerIdReturns200StatusCode() throws Exception {
-        final Owner savedOwner = this.ownerService.createOwner(OwnerBuilder.getOwnerC());
+        final Owner savedOwner = this.ownerService.saveOwner(OwnerBuilder.getOwnerC());
         final Long existingOwnerId = 1L;
 
         this.mockMvc.perform(
@@ -92,7 +92,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testPutMethodWithExistingOwnerIdReturns200StatusCode() throws Exception {
-        this.ownerService.createOwner(OwnerBuilder.getOwnerC());
+        this.ownerService.saveOwner(OwnerBuilder.getOwnerC());
 
         final Long existingOwnerId = 1L;
         final Owner newOwner = OwnerBuilder.getOwnerA();
@@ -114,7 +114,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testExistingOwnerDeletedSuccessfullyReturns200StatusCode() throws Exception {
-        final Owner toBeDeleted = this.ownerService.createOwner(OwnerBuilder.getOwnerC());
+        final Owner toBeDeleted = this.ownerService.saveOwner(OwnerBuilder.getOwnerC());
 
         final Long existingOwnerId = 1L;
 

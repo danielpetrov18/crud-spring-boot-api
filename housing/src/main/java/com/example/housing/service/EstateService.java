@@ -5,12 +5,12 @@ import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.example.housing.domain.entity.Estate;
 import com.example.housing.repository.IEstateRepository;
 import com.example.housing.exception.EstateNotFoundByIdException;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Service
@@ -25,24 +25,23 @@ public class EstateService {
 
     public Estate saveEstate(final Estate estate) {
         final Estate savedEstate = this.estateRepository.save(estate);
-        log.debug("Inserted an estate: {}", savedEstate);
+        log.debug("Saved an estate: {}", savedEstate);
         return savedEstate;
     }
 
-
-    public Optional<Estate> readEstate(final Long estateId) {
+    public Estate findEstateById(final Long estateId) {
         final Optional<Estate> possibleEstate = this.estateRepository.findById(estateId);
-        log.debug("Fetched estate: {}", possibleEstate);
-        return possibleEstate;
+        log.debug("ID: {}, Found estate: {}", estateId, possibleEstate);
+        return possibleEstate.get();
     }
 
-    public Collection<Estate> readEstates() {
+    public Collection<Estate> findAllEstates() {
         final Collection<Estate> allEstates = this.estateRepository.findAll();
-        log.debug("Fetched all estates");
+        log.debug("Found all estates");
         return allEstates;
     }
 
-    public Estate updateEstate(final Long estateId, final Estate newEstate) {
+    public Estate updateEstateById(final Long estateId, final Estate newEstate) {
         final Estate oldEstate = this.getEstateWithId(estateId);
 
         oldEstate.setEstateType(newEstate.getEstateType());
@@ -54,7 +53,7 @@ public class EstateService {
         return updatedEstate;
     }
 
-    public Estate deleteEstate(final Long estateId) {
+    public Estate deleteEstateById(final Long estateId) {
         final Estate deletedEstate = this.getEstateWithId(estateId);
         this.estateRepository.deleteById(estateId);
         log.debug("Deleted estate: {}", deletedEstate);
